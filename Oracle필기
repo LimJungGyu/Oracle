@@ -1,0 +1,1820 @@
+교재 언제주는지 과정이 확정되면 준다 일주일내지 2주 교재없이 해야한다
+교재없인 힘들다
+나갈떄 exit로 나가야 정상종료
+ppt준비
+데이터베이스도 종류가 많지만 그중에 가장 많이 사용되는게 관계형 데이터베이스다
+그중에 오라클 설치
+옛날에는 데이터 관리를 파일로 했습니다 체계적으로 관리필요
+이게 바로 dBms 데이터베이스 매니져먼트 시스템 
+관계형db 성격별로 테이블로 나눈다 기본단위는 테이블 테이블과 테이블사이의 관계 릴레이션을 설정
+관계형 데이터베이스 시장에서 70-80 
+테이블의 구성 : 가로 로우:행 세로 칼럼;열
+로우가 하나의 데이터 칼럼이 변수
+
+데이터 조회하기
+sql 구조화된 질문 렝귀지
+시퀀스 인텍스 뷰 프로시져 등이 오라클에 존재하는 객체들이다
+sql 종류 정의어DDL 조작어DML 제어어DCL//질의어DQL 트랜잭션 처리어 TCL
+dql select 검색시
+
+dml
+insert 데이터 입력
+update 데이터 수정
+delete 데이터 삭제
+
+ddl 데이터의 형식을 정의
+create 데이터베이스 생성
+alter 데이터베이스 변경
+drop 데이터베이스 삭제
+rename 데이터베이스 객체 이름 변경
+truncate 데이터베이스 저장 공간 삭제
+
+tcl 트렌잭션
+commit 트랜잭션의 정삭적인 종료처리
+rollback 트랜잭션의 취소
+savepoint 트랜잭션 내에 임시 저장점 설정
+
+dcl 보안
+grant 권한부여
+revoke 권한 취소
+
+
+오라클 다운로드 관련 오라클 다운로드 19c 버전으로 굳이받겠다면
+설치후 run sql command line 실행
+SQL> @path_to_sql_file
+
+SQL>@F:\website\oraok\ot\11g\ot_schema.sql
+
+conn system/1234          system에 접속
+alter user hr account unlock;   hr유저 풀림
+alter user hr identified by 1234; 비밀번호 설정
+conn hr/1234     hr에 접속
+@  드래그         파일로된 sql파일 실행        SQL> @path_to_sql_file
+
+                                    SQL>@F:\website\oraok\ot\11g\ot_schema.sql
+
+desc employee
+테이블구조 확인명력어 describe desc만 쳐도된다
+desc명령어는 칼럼명 데이터형 길이 null 허용 유무알려준다
+세미클론 해도되고 안해도되고
+name-------- null------------------------------------------ type
+      not null은 꼭 데이터가 넣어야한다 /number(2) 두자리숫자로 넣어야한다
+                                       /varcahr2(14) char로하면 자리수남을때 낭비되                                          는걸 막음(가변형일 때 varcahr로하자
+창에서 방향키 누르면 전에 적은 명령어 볼 수 있다
+date 날ᄍᆞ
+number(7,2) 7자리,소수점이하2자리
+number 뒤에 없어도 알아서 해준다
+
+연습문제
+사원이름과 급여와 연봉을 출력하라
+select ename, salary, salary*12  from employee;
+가상칼럼 만드는 것
+select ename, salary, salary*12 annpay  from employee;   하면 가상칼럼 이름도 바꿈
+
+연습문제2
+사원이름과 급여와 연봉,총연봉을 출력
+select ename, salary, salary*12 annpay, salary*12+commission  from employee;
+이러면 null값이 나옴 이건 내일
+
+SQL> conn hr/1234
+Connected.
+SQL> select ename,salary,salary*12+commission from employee;
+
+ENAME                    SALARY SALARY*12+COMMISSION
+-------------------- ---------- --------------------
+SMITH                       800
+ALLEN                      1600                19500
+WARD                       1250                15500
+JONES                      2975
+MARTIN                     1250                16400
+BLAKE                      2850
+CLARK                      2450
+SCOTT                      3000
+KING                       5000
+TURNER                     1500                18000
+ADAMS                      1100
+
+ENAME                    SALARY SALARY*12+COMMISSION
+-------------------- ---------- --------------------
+JAMES                       950
+FORD                       3000
+MILLER                     1300
+
+14 rows selected.
+commission 이 없는 애들은 값이 나오지 않는다
+null값 처리해야
+null값 처리함수 nvl (null value)
+
+널값이 나오면 0으로 처리하자
+SQL> select ename,salary,commission,salary*12+nvl(commission,0) from employee;
+
+별칭지정하기 한글 칼럼명은 가상칼럼에서만 가능하다
+-연봉
+-as연봉
+-“연봉”
+SQL> select ename,salary,commission,salary*12+nvl(commission,0)“연 봉” from employee;
+연봉에 연 봉으로 띄어쓰기하면 에러남 그러므로 “연 봉”하면 에러 안남
+
+
+
+
+select distinct sysdate from employee
+distinct 중복된 거 제거해주는 dual도 사용가능
+select sysdate from dual
+
+2장 2일차
+where 조건에 맞는 데이터만 검색
+oder by 절로 테이블을 일정한 순서로 나열-order by는 항상 맨 끝에 써야 한다 (문법)
+SQL> select * from employee
+  2  where dno=10;
+*는 all 이라는뜻 
+
+연습문제
+1급여가 1500 이상인 사원을 출력하세요
+SQL> select ename from employee
+  2  where salary>=1500;
+이름이 SCOTT인사람 추출
+SQL> select*from employee
+  2  where ename = 'SCOTT';
+1.오라클은 대소문자 구분을 한다 
+2.하지만 키워드는 대소문자 구분 안한다 (키워드는 왠만하면 소문자로 써서 구분하자)
+3.date는 format이 있는 문자열이다
+SQL> select*from employee
+   2  where hiredate <= '1981/01/01';
+4.모든 문자에는 모두 ascii code가 있따
+
+AND를 이용한 더좁은 범위의 추출
+SQL> select*from employee
+  2  where dno=10
+  3  and job='MANAGER';
+5.버추얼 테이블, 버추얼 칼럼: 이렇게 이중으로 조건을 하면 가상테이블 칼럼을 생성한다
+
+6. not
+SQL> select*from employee
+  2  where not dno=10;
+ 둘다 부정문: not:논리연산자 <>비교연산자 기능은 같지만 대용량일 때 읽는 속도의 차이가 있따
+7.급여가 1000에서 1500 사이의 사원을 출력하시오
+SQL> select ename from employee
+  2  where salary>1000 and salary>=1500;
+	between을 이용한방법(ANSI표준)
+  2  where salary between 1000 and 1500;
+
+
+8급여가 1000미만이거나 1500 초과인 사원을 출력하시오
+SQL> select ename from employee
+  2  where salary<1000 or salary>1500;
+        not과 between을 이용한 방법
+  2  where salary not between 1000 and 1500;
+
+9커미션이 300 이거나 500이거나 1400사원을 출력하시오
+SQL> select ename from employee
+  2  where commission=300 or commission=500 or commission=1400	
+        in을 사용하는 방법
+  2  where commission in(300,500,1400);
+
+10. >=and<=: 오라클 타입
+    beteen and : ANSI 표준 (아메리칸 네셔날 스탠다드)
+    in( , , ):ANSI 표준
+11. 1982년도에 입사한 사원을 출력하시오
+SQL> select * from employee
+  2  where hiredate between '1982.01.01' and '1982.12.31.';
+
+12 커미션이 300,500,1400이 모두 아닌 사원을 출력
+SQL> select * from employee
+  2  where nvl(commission,0) not in(300,500,1400);
+
+와일드카드 사용하기 like '패턴%'‘_’
+SQL> select*from employee
+  2  where ename like '%M%';
+SQL> select * from employee
+  2  where ename like '%N';
+
+2번째 글자 A가 들어가는 사원
+SQL> select * from employee
+  2  where ename like '_A%';
+13. 3번째 이름의 세 번째 글자가 A인 사원을 검색하시오
+SQL> select * from employee
+  2  where ename like '__A%';
+포함되지않는 (not은 연산자 뒤에 붙는다)
+SQL> select * from employee
+  2  where ename not like'%A%';
+
+
+널값 찾는 것 ( 꼭 널은 is를 사용해서 )
+SQL> select * from employee
+  2  where commission is null
+커민션이 null이 아닌 사원을 구하시오(is null은 is not null이다 특별함)
+SQL> select * from employee
+  2  where commission is not null;
+
+15 order by 절은 반드시 제일 끝에 와야함
+	asc(오름차순),desc(내림차순)
+SQL> select ename, salary from employee
+  2  order by salary asc;
+SQL> select ename, salary from employee
+  2  order by salary desc;
+숫자에만 오름차순 내림차순이 되는게 아니다
+SQL> select ename, salary from employee
+  2  order by ename;
+
+16.입사일이 느린 사람 순으로 구하시오
+SQL> select hiredate from employee
+  2  order by hiredate desc;
+
+다중조건
+SQL> select ename, salary,hiredate from employee
+  2  order by salary desc, ename asc;
+
+연습문제-baejyael@nate.com
+1.모든 사원의 급여를 300인상해서 이름, 급여, 인상된 급여를 구하시오
+SQL> select ename,salary,salary+300"increased salary" from employee;
+
+2.월급이 2000이 넘는 사원 이름,급여 구하고 급여는 오름 차순으로
+SQL> select ename, salary from employee
+  2  where salary>2000
+  3  order by salary asc, ename;
+
+3.1981년 2월 20일부터 81년 5월 1일 사이에 입사한 사원 이름 업무 입사일 구하기
+SQL> select ename, job,hiredate from employee
+  2  where hiredate between '1981.02.20' and '1982.05.01.';
+
+
+
+
+4.월급이 2000에서 3000 사이고 부서번호가 20 혹은 30인 사원의 이름 급여
+  부서번호 출력 이름은 오름차순
+SQL> select ename,salary,dno from employee
+  2  where salary>2000 and salary<3000
+  3  where dno=20 or dno=30;
+  4  order by ename asc;
+
+5.1981년에 입사한 사원 구하기( LIKE 이용
+SQL> select ename from employee
+  2  where hiredate like '81%';
+
+6.관리자가 없는 사원 이름과 업무 구하기
+SQL> select ename,job from employee
+  2  where manager is null;
+
+7.커미션이 있는 사원 이름 월급 커미션 출력 급여 및 커미션 기준 내림차순으로
+SQL> select ename,salary,commission from employee
+  2  order by commission, salary desc;
+
+8 이름에 A와 E를 모두 포함하고 있는 사원 이름 구하기
+SQL> select ename from employee
+  2  where (ename like '%A%' and ename like '%E%');
+
+
+오라클 다중 LIKE 사용하기
+WHERE (name LIKE '%홍%' OR name LIKE '%김%' OR name LIKE '%서%')
+-------------------------
+버퍼에 있는거 실행하는거  
+/ ---실행 (sql문 보여주진 않는다)
+R(run)  -- 실행 (sql문 보여준다)
+L(list) -버퍼에 저장된모든 sql문
+
+
+host를 통해 pro c를 볼수있는다 (디렉토리 검색)
+이제부터는 고칠 때 edit 사용
+edit (ed도가능)치면 메모장이 뜬다(오라클과 메모장이 연동되어있음)
+
+
+
+
+
+저장하기
+SQL> save sample.sql  (sql 생략가능)
+Created file sample.sql
+확인하기
+SQL> host
+C:\oraclexe\app\oracle\product\11.2.0\server\BIN>dir
+너무 많이 나옴
+dir *.sql 치면 확장자가 sql인것만 나온다
+exit하고 나오기
+
+이제 ed sample만해도 불러와서 수정가능
+get sample하면 수정했던 sample을 버퍼로 불러올 수 있다
+
+save sample append 하면 에딧 메모장에 안들어가고도 추가 저장가능
+
+@sample 하면 저장된 모든 커리 실행
+
+spool로 저장
+spool test(스풀이름)
+spool off(로 저장)
+그다음은 host치고 dir *.lst 치면 저장된거 확인
+
+칼럼명령어
+
+SQL> column dname format a12 (명령어는 ppt 참조3장 17page
+
+
+SQL> set linesize 130;     라인간격
+SQL> set pagesize 17;      한페이지 크기
+SQL> column ename format a10:  ename의 간격
+
+
+
+
+
+
+
+
+
+
+SQL> column commission format 9,999,999
+SQL> column salary format 0,000,000
+SQL> select* from employee;
+결과물
+       ENO ENAME      JOB           MANAGER HIREDATE     SALARY COMMISSION        DNO
+---------- ---------- ---------- ---------- -------- ---------- ---------- ----------
+      7369 SMITH      CLERK            7902 80/12/17  0,000,800                    20
+      7499 ALLEN      SALESMAN         7698 81/02/20  0,001,600        300         30
+      7521 WARD       SALESMAN         7698 81/02/22  0,001,250        500         30
+      7566 JONES      MANAGER          7839 81/04/02  0,002,975                    20
+      7654 MARTIN     SALESMAN         7698 81/09/28  0,001,250      1,400         30
+      7698 BLAKE      MANAGER          7839 81/05/01  0,002,850                    30
+      7782 CLARK      MANAGER          7839 81/06/09  0,002,450                    10
+      7788 SCOTT      ANALYST          7566 87/07/13  0,003,000                    20
+      7839 KING       PRESIDENT             81/11/17  0,005,000                    10
+      7844 TURNER     SALESMAN         7698 81/09/08  0,001,500          0         30
+      7876 ADAMS      CLERK            7788 87/07/13  0,001,100                    20
+      7900 JAMES      CLERK            7698 81/12/03  0,000,950                    30
+      7902 FORD       ANALYST          7566 81/12/03  0,003,000                    20
+      7934 MILLER     CLERK            7782 82/01/23  0,001,300                    10
+
+14 rows selected.
+
+
+
+SQL> column salary format $9,999,999        달러표시
+SQL> select* from employee;
+SQL> column commission format L9,999,999   지역화페단위 표시 (원화)
+SQL> select* from employee;
+SQL> column salary clear                      출력형식 클리어해버림
+SQL> column ename off	                 출력형식 끄고 키기
+SQL> colmn ename on
+
+select 'Oracle mania', 
+	upper('Oracle mania'),           전부대문자
+	lower('Oracle mania'),		 전부소문자
+	initcap('Oracle mania')           첫글자들만 대문자
+from dual
+'Mysql java phython' 대문자 소문자 단어 앞자리 대문자를 표시
+
+select ename,
+	lower(ename),
+	job,
+	initcap(job)
+ from employee
+
+
+이름으로 검색할 때 대소문자 구분 때문에 검색이 안된다할때
+SQL> select eno, ename,dno
+  2  from employee
+  3  where ename='scott';
+
+no rows selected
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select eno, ename,dno
+  2  from employee
+  3* where lower(ename)='scott'
+SQL> /
+
+       ENO ENAME             DNO
+---------- ---------- ----------
+      7788 SCOTT              20
+
+where 절에도 가상칼럼을 쓸수 있다
+
+문)가상칼럼 첫글자 대문자로 이름검색
+  1  select eno,ename,dno
+  2  from employee
+  3* where initcap(ename)='Scott'
+
+
+
+글자수 출력length('')
+ 1  select 'OracleMania' col1,
+  2     '오라클매니아' col2,
+  3     length('OracleMania') col3,
+  4     length('오라클매니아') col4
+  5* from dual
+몇바이트인지 출력 lengthb('')
+
+문)employee에서 사원이름의 길이 구하기
+  1  select ename, length(ename)
+  2* from employee
+
+concat 글자를 붙여주는 연산자 ('Oracle'||'mania' 이것도됨) 
+  1  select 'Oracle',
+  2         'mania',
+  3          concat('Oracle','mania')col3,
+  4     'Oracle'||'mania' co4
+  5*  from dual
+
+substr('' , 몇 번째글자, 부터몇글자)  (-숫자를 쓰면 뒤에서부터 몇글자이다)
+  1  select 'Oracle mania',
+  2     substr('Oracle mania',4,3)
+  3*  from dual
+SQL> /
+
+'ORACLEMANIA'            SUBSTR
+------------------------ ------
+Oracle mania             cle
+  1  select ename, substr(ename,-1,1)
+  2   from employee
+  3* where substr(ename,-1,1)='N'
+
+문)87년도에 입사한 사원을 구하시오
+ 1  select ename,hiredate
+  2  from employee
+  3* where substr(hiredate,1,2)='87'
+
+한글 깨질때
+C:\oraclexe\app\oracle\product\11.2.0\server\BIN>chcp 65001
+ 
+한글추출
+  1  select substr('Oracle mania',4,3) col1,
+  2           substrb('Oracle mania',4,3) col2,
+  3     substr('오라클매니아',3,4) col3,
+  4     substrb('오라클매니아',4,3) col4
+  5* from dual
+SQL> /
+
+COL1   COL2   COL3                     COL4
+------ ------ ------------------------ ------
+cle    cle    매
+
+a가 가장먼저 나오는 위치
+  1  select instr('Oracle mania','a') col1
+  2* from dual
+
+
+-----------------2021.10.05-------------
+select 96.7654,
+         round(96.7654),              ,0 이 생략되어지         =97 
+         round(96.7654,2),            소수점 2째까지 반올림    =96.77
+         round(96.7654,1)             소수점 1째까지 반올림  =	96.8			round(96.7654,-1)	      1의 자리 반올림        =100		 from
+dual
+--
+select 96.7654,
+         trunc(96.7654),                                  = 96 
+         trunc(96.7654,2),              소2 버림         = 96.76   
+         trunc(96.7654,1),              소1 버림         = 96.7  
+         trunc(96.7654,-1)            1의자리 버림       =  90
+ from
+dual                            
+select     mod(31,2),                    31을 2나누고 나머지   =1       
+	  mod(31,5),			31을 5나누고 나머지    =1
+	  mod(31,8)			31을 8나누고 나머지    =7
+from
+dual
+/
+24.급여를 500으로 나눈 나머지를 구하시오
+select ename, salary, mod(salary,500)
+from 
+employee 
+
+
+
+select     sysdate 		오늘 날짜 구하기 dual은 한줄로 나타내
+	sysdate-1, 		어제 
+	sysdate+1  		내일
+from dual
+/
+
+select	ename,
+	hiredate,
+	sysdate,
+	round(sysdate-hiredate) col4         /근무기간 구하기 (소수점 반올림처리)
+from employee
+/
+
+select	ename,
+	hiredate,
+	trunc(hiredate,'month'),		/고용일자 월기준 버림 ( 1일로)
+	round(hiredate,'month'), 	/고용일자 월기준 반올림 ( 1일로)   .
+	round(hiredate,'Q')		/고용일자 분기기준 반올림 1일로
+from employee				#월급줄 때 많이씀
+/					
+
+select	ename,
+	hiredate,
+	sysdate,
+	(sysdate-hiredate)/30,			  /함수x 몇개월 일했나 구하기(부정확
+	trunc(months_between(sysdate,hiredate)) /함수이용 몇개월일했나 구하기(정확)
+from employee
+/
+select	ename,				
+	hiredate,
+	hiredate+180			함수x 6개월 일한 시점 구하기(부정확
+	add_months(hiredate,6)		함수사용 6개월 일한 시점 구하기(정확	
+from employee
+/
+
+
+25.입사일 8개월전 9개월 후를 구하시오
+select	ename,
+	hiredate,
+	add_months(hiredate,-8),
+	add_months(hiredate,9) 
+from employee
+
+
+/
+select 	sysdate,
+	next_day(sysdate,7)		다음 토요일 일자구하기(토요일은 7
+	next_day(sysdate,1)		다음 일요일 일자구하기(일요일은 1~~~
+from dual
+/
+
+select 	ename,
+	hiredate,
+	last_day(hiredate),		고용한 달의 마지막 일 구하기(퇴직금계산시
+	sysdate,		
+	last_day(sysdate)		이번 달의 마지막 일 구하기(급여일)
+from employee
+/
+
+select 	ename,
+	hiredate,	 	date타입임 08/12/15 이런식이라 몇 년인지 안보임	
+	to_char(hiredate,'yyyy/mm/dd' day)      문자열로 바꾼다음 요일까지
+from employee
+/
+select 
+to_char(sysdate,'pm yyyy/mm/dd hh24:mi:ss day')   오전 2021/10/05 11:22:53 화요일
+from dual
+/
+
+select 	
+to_char(salary ,'L9,999,999')     /L로컬(원화)로 표시     ￦1,600
+from employee
+/
+26급여를 달러로 표시
+select 	
+to_char(salary ,'$9,999,999')     $로 달러로 표시		 $1,600
+from employee
+/
+
+
+select 	ename,
+	hiredate
+from employee
+where hiredate ='19810220'	19810220 에 입사한 사람 구하기
+/	데이터타입(문자열-데이트)을 오라클에서 자동으로 맞춰줬기 때문에 가능했다
+
+**숫자-데이트 타입은 자동아님 숫자를 문자열로 바꿔줘야 된다
+select 	ename,
+	hiredate
+from employee
+where hiredate =to_date(19810220,'yyyy/mm/dd')
+/
+
+문자열을 숫자로 바꿔서 빼기((뒤에 포맷을 지정안해주면 에러가 난다)
+select
+to_number('100,000','999,999')-to_number('50,000','999,999')
+from dual
+/
+
+
+
+
+
+
+
+
+
+
+
+
+1.substr 함수이용 입사한 년도,입사한 달을 출력
+select
+substr(hiredate,1,2),
+substr(hiredate,4,2)
+from employee
+/
+2.substr 이용 4월에 입사한 사원 출력
+select
+ename,
+hiredate
+from employee
+where substr(hiredate,4,2)='04'
+/
+3.사원번호가 짝수인 사람 출력
+select
+ename,
+eno
+from employee
+where mod(eno,2)=0
+/
+4.입사일을 연도는 2자리 월은 숫자로 요일은 약어 dy로 출력  ex)80/12월/17수
+select
+ename,
+to_char(hiredate,'yy/mon/dd dy')
+from employee
+/
+
+5올해 며칠 지났는지 출력
+select
+sysdate-to_date('2021/01/01')
+from dual
+/
+
+
+
+
+
+
+
+
+
+-------------------10.06
+
+널값 처리함수
+NVL함수 널값을 어ᄄᅠᇂ게 처리할것인가 
+select 
+ename,salary,commission,	커미션에 널값이 있어서 연봉이 계산안됨
+salary*12+nvl(commission,0) col4    널값 0으로 지정 
+from employee
+/
+
+NVL2
+select 	ename,salary,commission,
+	nvl2(commission,salary*12+commission,  커미션이 널값이 아니면 커미션더하고
+	salary*12) col4				널값이면 셀러리만
+from employee
+/
+
+nullif
+select 	nullif('A','A'),			인자가 같으면 널
+	nullif('A','B')			다르면 첫 번째를 반환
+from dual
+/
+select	ename,salary,commission
+	caolesce(commission, salary, 0)  커미션이 널이면 셀러리를 반환 널이아니면  
+from dual				0을 반환
+/
+
+decode
+select	ename,dno		         dno가 해당값에 해당리턴 null이면 디폴트 
+	decode(dno,10,'ACCOUNTING',
+		    20,'REWEARCH',
+		    30,'SALES',
+		    40,'OPERATIONS',
+		    'DEFAULT') as dname
+from employee
+/
+
+
+
+
+
+CASE문
+select	ename,dno,
+	decode(dno,10,'ACCOUNTING',
+		    20,'REWEARCH',
+		    30,'SALES',ㅇ
+		    40,'OPERATIONS',
+		    'DEFAULT') as dname,
+	case 	when dno=10 then 'ACCOUNTING'
+		when dno=20 then 'REWEARCH'
+		when dno=30 then 'SALES'
+		when dno=40 then 'OPERATIONS'
+		else 'DEFAULT'
+	end as dname2
+from employee
+/
+연습문제
+6 사원의 상관 번호 출력 상관이 없으면 0으로
+select ename,nvl(manager,0) from employee
+/
+7 직급에 따라서 급여인상 어날리스트 200,세일즈맨은 180, 매니져 150 클러크 100
+ 하는 것을 decode,case 이용해서 작성
+select ename,salary,job,
+	decode(job,'ANALYST',salary+200,
+		   'SALESMAN',salary+180,
+		   'MANAGER',salary+150,
+		   'CLERK',salary+100,
+		  salary ) as salaryRise,
+	case 	when job='ANALYST' then salary+200
+		when job='SALESMAN' then salary+180
+		when job='MANAGER' then salary+150
+		when job='CLERK' then salary+100
+		else salary
+	end as salaryRise2
+from employee
+/
+
+그룹함수에는 일반 컬럼 같이 못씀
+그룹함수의 특정은 하나의 그룹에대해서 딱 한줄만 만들어진다.
+
+
+
+연습문제 가장 최근에 입사한 사원과 가장 오래전에 입사한 사원의 입사일
+select	max(hiredate),
+	min(hiredate)
+ from employee
+/
+
+select
+count(*),		줄 자체를 샌다                 14개 
+count(commission), 그 칼럼에 있는 널값이 아닌걸 샌다    4개
+count(salary)						14개
+from employee
+/
+
+job 종류를 알고 싶을 때(중복 빼기)
+select 
+count(distinct job)           distinct로 중복 제거후 센다
+from employee
+/
+select 
+dno
+from employee
+group by dno			group by한 일반칼럼은 select 절에 쓸 수 있다
+/
+select 			
+dno,avg(salary)
+from employee
+group by dno			dno를 그룹핑 한다음 그그룹의 셀러리 평균구하기
+/
+
+
+2.부서별, job별로 그룹해서 각각의 개수와 급여의 합계를 구하시오
+select 
+dno,job,count(*),
+sum(salary)
+from employee
+group by dno,job
+order by dno,job
+/
+
+
+
+1.모든 사원 급여 최고,최저 총액,평균 출력 평균은 정수로 반올림 별칭임의
+select 
+max(salary) as "Maximum value",
+min(salary) as Minimum,
+sum(salary) as Sum,
+round(avg(salary),-1) as Average
+from employee
+2.업무별로 급여 최고,최저 총액,평균 출력 평균은 정수로 반올림 별칭임의
+select 
+job,
+max(salary) as Maximum,
+min(salary) as Minimum,
+sum(salary) as Sum,
+round(avg(salary),-1) as Average
+from employee
+group by job
+/
+3.업무가 같은 사원 수 출력
+select 
+job,
+sum(count(distinct job))
+from employee
+group by job
+order by job
+/
+4. 관리자 수 출력
+select
+sum(count(distinct manager))
+from employee
+group by manager
+/
+5.급여 최고액과 최저액의 차이를 구하시오
+select
+max(salary)-min(salary)
+from employee
+/
+6.직급별로 사원의 최저급여 구하기(관리자 없는 사원제외)
+select job, min(salary)
+from employee
+where manager is not null
+group by job
+select dno,max(salary)
+from employee
+where manager is not null
+group by dno
+having max(salary)>=3000       having절을 통한 검색결과 제한 
+order by dno
+/
+
+급여총액이 5000이 넘는 직급에 대해서 직급,급여 총액을 구하시오
+단 직급이 manager는 제외
+select job,sum(salary)
+from employee
+where job <> 'MANAGER'
+group by job
+having sum(salary)>=5000
+order by job
+/
+
+156p 7번
+
+select dno,
+	count(*) as "Number of People",
+	round(avg(salary),2) as "Salary"
+from employee
+group by dno
+order by dno asc
+/
+
+8번
+select 	decode( dno ,  10 ,'ACCOUNTING',
+			20 ,'RESEARCH',
+			30 ,'SALES',
+			40 ,'OPERATIONS') as "dname",
+	decode( dno ,  10 ,'NEWYORK',
+			20 ,'DELLAS',
+			30 ,'CHICAGO',
+			40 ,'BOSTON') as "Location",
+	count(*) as "Number of People",
+	round(avg(salary),2) as "Salary"
+from employee
+group by dno
+/
+9번
+select job,dno,
+	decode(dno, 10,sum(salary)) as "부서 10",
+	decode(dno, 20,sum(salary)) as "부서 20",
+	decode(dno, 30,sum(salary)) as "부서 30",
+	sum(salary) as "총액"
+from employee
+group by job,dno
+order by dno
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6장 조인JOIN : 여러테이블을 합침
+테이블에도 별칭 사용가능
+
+CARTESIAN PRODUCT :조인의 기본 조인 조건을 생략한 형태 
+EQUI JOIN :WHERE절을 이용해서 공통칼럼을 비교(=)를 통해 같은값을 가지는 행을 연결
+NON EQUI JOIN: WHERE절에 < BETWEEN A AND B같은 (=)이 아닌 연산자 사용  
+SELF JOIN : 하나의 테이블 스스로 조인  하나의 테이블에서 칼럼끼리 연결 필요할때
+OUTER JOIN (+)로 표시, 양측값 중하나가 널값이지만 조인결과로 출력 필요할 때 사용
+ANSI JOIN :미국 표준협회에서 만든 조인 알파벳으로 많이 이루어짐
+
+
+-카디시안 곱(cartesian product)
+ select * from department,employee;
+56개행이 된다.
+중복 되는 단어 dno가 있다
+
+select * from department,employee
+where employee.dno = department.dno
+/
+를 하면 공통단어 dno를 조건으로한 EQUL조인 14개행이 된다
+
+select employee.dno,ename,department.dno,dname 
+ from department,employee
+where employee.dno = department.dno
+and eno = 7788
+/
+
+equi join에  and 연산하기-=-----중복되는 칼럼명 사용시 사용하고자하는 테이블.칼럼명 으로해야 오류가 안난다(ex employee.dno)
+select employee.dno,ename,department.dno,dname 
+ from department,employee
+where employee.dno = department.dno
+and eno = 7788
+/
+테이블에 별칭사용하기
+select e.eno, e.ename, d.dname, e.dno
+from employee e, department d
+where e.dno = d.dno
+and e.eno=7788
+/
+NATURAL JOIN—오라클 이전버전에 EQUI 대신에 사용하던 조인방식
+EQUL 서는 테이블명 명시적으로 지정해지 않고서는 안되지만 NATURAL에서는 자동적으로 일치하는 데이터 유형 및 이름 가진 공통칼럼 조사후 조인 자동
+select e.eno, e.ename, d.dname, dno
+from employee e natural join department d
+where e.eno = 7788
+/
+주의))))별칭 사용시 오류남~~
+select e.eno, e.ename, d.dname, e.dno   (공통칼럼에 별칭사용함)
+from employee e natural join department d
+where e.eno = 7788
+/
+
+using 절-using절에 조이대상이 되는 칼럼지정: 데이터유형이 일치하지않는 칼럼까지 데려옴
+inner join은 디폴트값이므로 
+select e.eno, e.ename, d.dname,dno
+from employee e join department d
+using(dno)
+where e.eno=7788
+/
+
+on 절—조건만을 on절에 기술:임의의 조건을 지정하거나 조인할 칼럼을 지정할때
+select e.eno, e.ename, d.dname,e.dno
+from employee e join department d
+on e.dno =d.dno
+/
+<non-equi join>
+조인 조건에 특정범위 내에 있는지 조사하기 위해사용
+
+employee의 salary가 salgrade의 몇등급인지 살펴보기
+select ename, salary, grade
+from employee e ,salgrade s
+where salary between losal and hisal
+/
+부서명 추가
+select ename,salary,d.dname,grade
+from employee e ,salgrade s,department d
+where salary between losal and hisal
+and e.dno =d.dno
+/
+
+연습문제 1~6 page178
+1.EUQI 조인을 사용하여 SCOTT 사원의 부서번호와 부서이름을 출력하시오
+select ename,e.dno,d.dname
+from employee e,department d
+where e.dno= d.dno
+and e.ename='SCOTT'
+/
+2.INNER JOIN과 ON연산자를 사용하여 사원이름과 함께 그사원이 소속된 부서이름과 지역명을 출력하시오
+select ename,d.dname,d.loc
+from employee e join department d
+on e.dno= d.dno
+/
+3.INNER JOIN과 USING 연산자를 사용하여 10번 부서에 속하는 모든 담당업무의 고유목록을 (한번씩만 표시)부서의 지역명을 포함하여 출력하시오
+select dno,job,loc
+from employee join department
+using(dno)
+where dno=10
+/
+4.NATURAL JOIN을 사용하여 커미션을 받는 모든사원의 이름,부서명,지역명을 출력하시오
+select ename,dname,loc
+from employee natural join department
+where commission >0
+/
+5. EQUI 조인과 WILDCARD를 사용하여 이름에 A가 포함된 모든 사원의 이름과 부서명을 출력하시오
+select e.ename,d.dname
+from employee e,department d
+where d.dno=e.dno
+and e.ename like '%A%'
+/
+6.NATURAL 조인을 사용하여 NEW YORK에 근무하는 모든사원의 이름,업무,부서번호 및 부서명을 출력하시오
+select ename,job,dno,dname
+from employee natural join department 
+where loc='NEW YORK'
+/
+
+
+
+
+
+SELF JOIN 하나의 테이블에 있는 칼럼끼리 연결해야하는 조인이 필요한 경우 사용
+
+select employees.ename as"사원이름",manager.ename as "직속상관"
+from employee employees, employee manager
+where employees.manager = manager.eno
+/
+
+OUTER JOIN 양측카럶 값중 하나가 NULL값이지만 조인 결과로 출력할 필요가 있는 경우 사용 WHERE절에서 (+) 기호를 사용 조인 조건문에서는 NULL값출력되는 칼럼에 (+) 추가
+
+사장인 king의 관리자가 없으므로(NULL) king자체가 출력이 안됨 그러므로 outer join필요
+select 	employees.eno,
+	employees.ename,
+	employees.manager,
+	manager.eno,
+	manager.ename
+from employee employees join employee manager
+on employees.manager = manager.eno(+)
+/
+연습문제
+7.SELF JOIN을 사용하여 사원의 이름 및 사원번호를 관리자이름 및 관리자 번호와 함께 출력하시오 단, 각열의 별칭은 결과화면과 같도록 하시오
+select 	emp.ename as "Employee",
+	emp.manager as "Emp#",
+	mgr.eno as "Manager",
+	mgr.ename as " Mgr#"
+from employee emp,employee mgr
+where emp.manager=mgr.eno
+/
+8.OUTER JOIN,SELF JOIN을 사용하여 관리자가 없는 사원을 포함하여 사원번호를 기준으로 내림차순 정렬하여 출력하시오
+select emp.ename as "Employee",
+emp.eno as "Emp#",
+mgr.eno as "Manager",
+mgr.ename as "Mgr#"
+from employee emp,employee mgr
+where emp.manager = mgr.eno(+)
+order by emp.eno desc
+/
+9.SELF JOIN을 사용하여 지정한 사원의 이름 ,부서번호 지정한 사원과 동일한 부서에서 근무하는 사원을 출력하시오 단, 각열의 명칭은 이름,부서번호,동료로 하시오
+
+
+
+
+다날라감  ㅠㅠㅠㅠㅠ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+연습문제
+1.사원 테이블의 사원번호가 자동으로 생성되도록 시퀀스를 작성하시오
+
+create sequence emp_seq
+start with 1
+increment by 1
+maxvalue 100000
+/
+2.사원번호를 시퀀스로부터 발급받으시오(추가 7개 정도 insert)
+ 1* create table emp01(empno number(4) primary key,ename varchar(10),hiredate date)
+/
+insert into emp01 values(emp_seq.nextval,'julia',sysdate)
+insert into emp01 values(emp_seq.nextval,'maria',sysdate)
+insert into emp01 values(emp_seq.nextval,'marin',sysdate)
+insert into emp01 values(emp_seq.nextval,'tank',sysdate)
+insert into emp01 values(emp_seq.nextval,'lulu',sysdate)
+insert into emp01 values(emp_seq.nextval,'mumu',sysdate)
+insert into emp01 values(emp_seq.nextval,'toto',sysdate)
+/
+
+3.emp01테이블의 이름 칼럼을 인덱스로 설정하되 인덱스 이름을 IDX_EMP_01_ENAME으로 지정하시오
+create index idx_emp01_ename
+on emp01(ename)
+/
+4. job으로 인덱스 생성
+create table emp_prac
+as
+select job,dno from employee 
+/
+create index indx_emp_prac_job
+on emp_prac(job)
+5. job,dno 로 인덱스 생성
+create index idx_emp_prac_com
+on emp_prac(job,dno)
+
+6.유니크 인덱스 생성
+create unique index_idx_dept_dno
+on dept_second(dno)
+13장 사용권한
+오라클의 보안 정책은 크게 시스템 보안과 데이터 보안으로 나뉜다
+사용자는 객체의 소유자로부터 접근 권한을 받아야 사용할수있다
+
+db를 유지하려면 필요한 것
+신뢰성(index)
+보안(sequence)
+
+사용권한 privileage
+롤 role==pri의 집합
+
+실습을 위해 user를 몇 개 만든다
+SQL> conn system/1234
+Connected.
+SQL> create user usertest01 identified by pass1;
+접속하려고 하면 경고가 뜸 접속할 권한 부족
+SQL> conn usertest01/pass1;
+ERROR:
+ORA-01045: user USERTEST01 lacks CREATE SESSION privilege; logon denied
+Warning: You are no longer connected to ORACLE.
+세션 접속 권한 부여
+SQL> grant create session to usertest01;
+Grant succeeded.
+접속 성공
+SQL> conn usertest01/pass1
+
+테이블  권한부여
+SQL> grant create table to usertest01;
+Grant succeeded.
+그래도 테이블이 생성 경고 뜸
+테이블 스페이스: 디스크 공간을 소비하는 테이블가 뷰 ,그리고 그 밖의 다른 데이터 베이스 객체들이 저장되는 장소
+테이블 스페이스 권한을 확인 주어져 있음
+SQL> conn system/1234
+Connected.
+  1  select username,default_tablespace
+  2  from dba_users
+  3* where username in ('USERTEST01')
+USERTEST01
+SYSTEM
+
+사용자 생성 당시 해당 디폴트 테이블 스페이인 users에 대한 QUATA를 지정해주지 않았기 때문
+
+할당
+conn system/1234;
+alter user usertest01 quota 5m on system
+
+SQL> conn usertest01/pass1
+Connected.
+SQL> create table sampletbl(
+  2  memo varchar2(50));
+
+Table created.
+
+alter user usertest01 default tabledpace users
+
+
+
+둘다 별칭이지만 때에 따라 부르는게 다르다
+alias <=>synonym
+
+권한제거
+conn system/1234;
+revoke create session from usertest01;
+
+시스템 권한 조회하기
+SQL> conn usertest01/pass1;
+Connected.
+SQL> select * from session_privs;
+
+PRIVILEGE
+--------------------------------------------------------------------------------
+CREATE SESSION
+CREATE TABLE
+
+
+
+
+
+
+with grant option을 이용해서 권한부여하면 권한부여받은 사용자도 권한 부여 가능
+SQL> create user usertest02 identified by pass2;
+User created.
+SQL> create user usertest03 identified by pass3;
+User created.
+SQL> grant create session ,create table,create view to usertest02;
+Grant succeeded.
+SQL> grant create session ,create table,create view to usertest03;
+Grant succeeded.
+
+SQL> grant select on hr.employee to usertest02 with grant option;
+Grant succeeded.
+SQL> conn usertest02/pass2
+Connected.
+SQL> grant select on hr.employee to usertest01;
+
+public 키워드는 모든사용자에게 해당 권한을 부여
+
+SQL> conn hr/1234;
+Connected.
+SQL> grant select on hr.department to public;
+Grant succeeded.
+
+롤을 사용한 권한 부여
+롤은 권한 묶음 사전정의 된것도 있고 사용자가 정의 할수도 있음
+DBA롤
+CONNECT롤
+RESOURCE롤 
+
+
+SQL> conn system/1234;
+Connected.
+SQL> create role roletest01;    //롤 만들고
+Role created.
+SQL> grant create session,create table, create view to roletest01; //롤의 권한 넣고
+Grant succeeded.
+SQL> grant roletest01 to usertest01;   //롤 부여
+Grant succeeded.
+
+
+CONNECT롤
+롤 제거
+SQL> conn system/1234;
+Connected.
+SQL> drop role roletest01;
+Role dropped.
+롤 제거
+객체 권한을  롤에 부여하기
+Role created.
+
+SQL> conn hr/1234;
+Connected.
+SQL> grant select on employee to roletest02;
+
+Grant succeeded.
+
+SQL> conn system /1234;
+Connected.
+SQL> grant roletest02 to usertest01;
+
+si 3대 막장
+kt) (농협 신한)) (한전)
+좋은곳 삼성제조업 hynix
+
+제일 기피 분야 공공이 최악
+
+
+동의어 
+동의어는 다른 데이터베이스 객체에 다른 별칭 create synonym문으로 동의어를 새롭게 정의
+
+
+conn system/1234
+  1  create table sampletbl(
+  2  memo varchar2(50));
+SQL> insert into sampletbl values('오월은 푸르구나');
+1 row created.
+SQL> insert into sampletbl values('최선을 다 합니다');
+1 row created.
+
+\
+
+
+
+
+SQL> conn hr/1234;
+SQL> select * from system.sampletbl;
+MEMO
+--------------------------------------------------------------------------------
+오월은 푸르구나
+최선을 다 합니다
+SQL> create synonym priv_sam for system.sampletbl;   //전용 별칭 붙인것
+Synonym created.
+
+공용 동의어
+SQL> grant select on sampletbl to hr;
+Grant succeeded.
+SQL> commit;
+Commit complete.
+SQL> grant select on sampletbl to hr;
+Grant succeeded.
+SQL> create public synonym pub_sam for system.sampletbl;  //공용별칭 붙인것
+Synonym created.
+
+지울때도 전용 공용 틀리다
+전용
+SQL> create synonym priv_sam for system.sampletbl;
+Synonym created.
+SQL> drop synonym priv_sam;
+Synonym dropped.
+
+
+SQL> drop synonym pub_sam;
+drop synonym pub_sam 
+ERROR at line 1:       ///그냥 드랍 시노늄 하면 디퐅트값이 전용이라 에러남
+ORA-01434: private synonym to be dropped does not exist
+SQL> drop public synonym pub_sam;   //퍼블릭을 붙여야 공용이라 인식
+Synonym dropped.
+
+
+
+
+
+
+연습문제
+1. kbs라는 사용자를 생성(암호는 pass)하시오
+SQL> create user kbs identified by pass;
+
+2. 기본적인 권한 부여를 하지 않으면 데이터베이스에 로그인이 불가능함으로 connect와         resource권한을 kbs 사용자에게 부여하시오
+SQL> grant connect,resource to kbs;
+
+3. school 유저 생성
+SQL> create user school identified by schoolpass;
+
+4. 시스템 role1 하나 만들기 (이름 임의)
+SQL> create role schoolrole01;
+Role created.
+SQL> grant create session,create table, create view, to schoolrole01;
+Grant succeeded.
+
+5. role1을 school에 부여하기
+SQL> grant schoolrole01 to school;
+
+6. school table 하나 생성(임의로) 칼럼은 3~5정도 임의로
+ 1* create table sample_Sch(subject varchar2(30),student varchar2(1000),room number(30),reacher varchar2(10) )
+7. 데이터 10개 인서트
+insert into sample_sch values('math','limjg',304,'kangjh')
+insert into sample_sch values('math','limjg',304,'kangjh')
+insert into sample_sch values('math','limjg',304,'kangjh')
+insert into sample_sch values('english','limjg',301,'leeyh')
+insert into sample_sch values('english','limjg',301,'leeyh')
+insert into sample_sch values('english','limjg',301,'leeyh')
+insert into sample_sch values('english','limjg',301,'leeyh')
+insert into sample_sch values('korean','limjg',102,'parkmj')
+insert into sample_sch values('korean','limjg',102,'parkmj')
+insert into sample_sch values('korean','limjg',102,'parkmj')
+8. 공용 시노님 1개,전용 시노님 1개 만들기
+-- 공용 1* create public synonym sample_sch for system.samplesch
+-- 전용 1* create sysonym sample_sch for system.sample_sch
+
+
+
+
+14장 pl/sql기초
+통 쿼리다
+명령문이 한묶음으로 되어 있을 때 해결이 안 되는 경우가 있다
+그럴 때 절차적인 프로그래밍 언어를 가미해서 해결
+
+메시지 출력하기 
+SQL> begin
+  2     dbms_output.put_line('Welcom to Oracle');
+  3  end;
+  4  /
+
+  1  declare
+  2     v_eno employee.eno%type;
+  3     v_ename employee.ename%type;
+  4     v_employee employee%rowtype;
+  5  begin
+  6     v_eno:=7788;
+  7     v_ename:='SCOUT';
+  8     dbms_output.put_line('eno       ename');
+  9     dbms_output.put_line('================');
+ 10     dbms_output.put_line(v_eno || '      '|| v_ename);
+ 11* end;
+SQL> /
+eno       ename
+================
+7788      SCOUT
+
+
+변수 선언
+plsql 블록 내에서 변수를 사용하려면 선언부에서 선언해야하면 변수명 다음에 데이터 타입을 기술해야 합니다. pL/SQL에서 변수를 선언할　때 사용되는 자료형ㄴ은 sql에서 사용하던 데이터 타입과 유사
+데이터 타입 스칼라와 레버런스
+Scalar sql에서와 데이터 티입 유사 숫자, 문자, 날짜, boolean
+reference   %TYPE Attribute
+		TABLE이름.COULMN이름%TYPE
+
+
+
+
+loop
+-일반 
+1.loop
+2.while loop
+-for loop
+
+basic loop로 구구단 출력하기
+set serveroutput on
+declare
+    dan number := 2;
+    i number := 1;
+begin
+    loop
+	dbms_output.put_line( dan||'*'||i||'='||(dan*i));
+	i:=i+1;
+	if i>9 then exit;
+	end if;
+    end loop;
+end;
+/
+for loop로 구구단(2단) 출력하기
+declare
+    dan number := 2;
+    i number := 1;
+begin
+    for i in 1..9loop
+	dbms_output.put_line(dan ||'*'||i||'='||(dan*i));
+    end loop;
+end;
+/
+while loop문으로 구구단(2단)출력하기
+declare
+    dan number := 2;
+    i number := 1;
+begin
+	while i<=9 loop
+	dbms_output.put_line(dan || '*' || i || '=' || (dan*i));
+	i :=1+i;
+	end loop;
+end;
+/
+ 구구단 전체
+declare
+    dan number := 2;
+    i number := 1;
+    j number := 1;
+    temp varchar2(1000) := '';
+    tmp2 varchar2(5):='    ';
+    contmp varchar2(3000):='';
+begin
+	while j <=9 loop
+	    while dan<=9 loop
+		temp :=  dan||'*'||j||'='||dan*j;
+		if dan*j<10 then
+		  contmp:=contmp||temp||'   ';
+		else
+		  contmp:=contmp||temp||'  ';
+		end if;
+		dan :=dan+1;
+	    end loop;
+		dbms_output.put_line(contmp);
+		dan:=2;
+		contmp:='';
+		j:=j+1;
+	end loop;
+end;
+/
+커서로 테이블의 모든 내용 조회하기
+declare
+	v_dept department%rowtype;
+	cursor c1
+	is
+	select * from department;
+begin
+	dbms_output.put_line('dno        dname             loc');
+	dbms_output.put_line('-------------------------------------');
+	open c1;
+	loop
+	   fetch c1 into v_dept.dno, v_dept.dname,v_dept.loc;
+	   exit when c1%notfound;
+	    dbms_output.put_line(v_dept.dno||'     '||v_dept.dname||'             '||v_dept.loc);
+	end loop;
+	close c1;
+end;
+/
+커서로 테이블의 모든 내용 조회하기
+declare
+	v_dept department%rowtype;
+	cursor c1
+	is
+	select * from department;
+begin
+	dbms_output.put_line('dno        dname             loc');
+	dbms_output.put_line('-------------------------------------');
+	for v_dept in c1 loop
+	     dbms_output.put_line(v_dept.dno||'  '||v_dept.dname||' '||v_dept.loc);
+	end loop;
+end;
+/
+
+연습문제
+1.if문을 사용하여 king 사원의 부서번호를 얻어와서 부서번호에 따른 부서명을 출력하시오
+declare
+	vemp employee%rowtype;
+	vdname varchar2(14);
+begin
+	select * into vemp
+	from employee
+	where ename='KING';
+	if (vemp.dno =10)  then vdname := 'accounting';
+	elsif (vemp.dno=20) then vdname := 'research';
+	elsif (vemp.dno=30) then vdname := 'sales';
+	elsif (vemp.dno=40) then vdname := 'operations';
+	end if;
+	dbms_output.put_line('eno / ename / dname');
+	dbms_output.put_line('-----------------------');
+	dbms_output.put_line(vemp.eno||'/'||vemp.ename||'/'||vdname);	
+end;
+/
+
+
+
+2.basic loop문으로 1부터 10 사이의 자연수를 구하여 출력하시오
+declare
+	i number :=1;
+	hap number:=0;
+begin
+	loop
+	    hap := hap + i;
+	    i := i + 1;
+	    if i>10 then exit;
+	    end if;
+	end loop;
+	dbms_output.put_line(hap);
+end;
+/
+3.for loop문으로 1부터 10사이의 자역수의 합을 구출력하시오
+declare
+	hap number :=0;
+begin
+	for i in 1..5 loop
+	hap := hap + i;
+	end loop;
+dbms_output.put_line(hap);
+end;
+/
+4.while loop문ㅇ로 1부터 10 사이의 자연수의 합을 구하여 출력하시오
+declare
+	i number :=1;
+	hap number :=0;
+begin
+	while i<10 loop
+	hap := hap+i;
+	i:= i+1;
+	end loop;
+	dbms_output.put_line(hap);
+end;
+/
+5.사원테이블에서 커미션이 null이 아닌 상태의 사원번호,이름 급여를 ,이름 기준으로 오름차순으로 정렬한 결과를 출력하시오
+declare
+	v_emp employee%rowtype;
+	cursor c1
+	is
+	select * from employee
+	where commission is not null;
+begin
+	dbms_output.put_line('dno          eno          salary');
+	dbms_output.put_line('--------------------------------------');
+	for v_emp in c1 loop
+	   exit when c1%notfound;
+	   dbms_output.put_line(v_emp.eno||'      '||v_emp.ename||'    '||v_emp.salary);
+	end loop;
+end;
+/
+6. school에 임의의 table에 cursor를 만들어서 일부 칼럼의 값을 출력하시오 
+declare
+	cursor c1
+	is
+	select * from sample_sch;
+begin
+	dbms_output.put_line('subject       student         room');
+	dbms_output.put_line('--------------------------------------');
+	for sample_sch in c1 loop
+	   exit when c1%notfound;
+	   dbms_output.put_line(sample_sch.subject||'      '||sample_sch.student||'    '||sample_sch.room);
+	end loop;
+end;
+/
+프로시져
+일련의 작업들을 하나로 묶어서 저장해두었다가 호출해서 작업실행 한다
+프로시져 생성하기 create or replace
+create procedure sp_salary
+is 
+v_salary employee.ename%type;
+begin
+	select salary into v_salary
+	from employee
+	where ename = 'SCOTT';
+	dbms_output.put_line('SCOTT의 급여는 ' || v_salary);
+end;
+/
+실행은 execute로 실행한다    execute sp_salary 
+
+
+out매개변수 사용하기
+ create procedure sp_salary_ename2(
+v_ename in employee.ename%type, 
+v_salary out employee.salary%type)
+ is
+begin
+	select salary into v_salary
+	from employee
+ 	where ename = v_ename;
+ end;
+/
+out 매개변수로 프로시져 결과값 얻어오기
+
+SQL> variable v_salary varchar2(14);
+SQL> execute sp_salary_ename2('SCOTT',:v_salary);
+
+PL/SQL procedure successfully completed.
+
+inout을 이용해서 전화번호 
+create procedure for_phone(g_phone in out varchar2
+)
+is
+begin
+	g_phone:='(' || substr(g_phone,1,3) || ')' || substr(g_phone,4,3) ||‘-’||substr(g_phone,7);
+ end;
+/
+전화번호 싱행
+variable g_phone varchar2(20);
+begin
+:g_phone:='0536748965';
+end;
+print g_phone;
+<<<<함수>>>>
+함수와 프로시져를 구별안하는 언어도 있지만 오라클에서는 구별한다
+함수의 특징 반드시 return 필요+ 리턴 타입을 명시해줘야한다
+
+function 문 사용하기
+  1  create or replace function fn_salary_ename(
+  2     v_ename in employee.ename%type)
+  3  return number
+  4  is
+  5  v_salary number(7,2);
+  6  begin
+  7  select salary into v_salary/
+
+  8     from employee
+  9     where ename = v_ename;
+ 10     return v_salary;
+ 11* end;
+SQL> /
+
+Function created.
+
+SQL> variable v_salary number;
+SQL> execute :v_salary :=fn_salary_ename('SCOTT');
+
+PL/SQL procedure successfully completed.
+print v_salary로 프린트
+
+
+함수 호출하기 
+select ename,salary, fn_salary_ename('SCOTT')
+from employee
+/
+트리거 
+오라클에서 어떤 이벤트가 발생했을 때 내부적으로 실행되도록 데이터베이스에 저장된 프로시저를 말한다 
+프로시저나 함수처럼 선언부 실행부 예외부를 갖는 plsql블록 구조를 가지고 있음
+함수나 프로시저는 execute문으로 직접 호출하지만
+트리거는 호출 따로 없음 그냥 이벤트 발생시 자동으로 실행
+
+create or replace trigger trigger_sample1
+   after insert
+   on dept_original
+   for each row
+begin
+   if inserting then
+   dbms_output.put_line('Insert Trigger occured');
+   insert into dept_copy
+   values(:new.dno, :new.dname, :new.loc);
+   end if;
+end;
+/
+
+delete 트리거 생성하기
+  1  create or replace trigger trigger_sample2
+  2     after delete
+  3     on dept_original
+  4     for each row
+  5     begin
+  6     dbms_output.put_line('delete trigger occered');
+  7     delete from dept_copy
+  8     where dept_copy.dno =:old.dno;
+  9* end;
+SQL> /
+Trigger created.
+
+1.사원 테이블에서 커미션 null이 아닌 상태의 사원번호,이름,급여를 이름 기준으로 오름차순 정렬한 결과를 나타내는 저장 프로시저를 생성하시오.
+create procedure sp_commission
+is 
+	cursor c1
+	is
+	select * from employee
+	where commission is not null;
+begin
+	dbms_output.put_line('dno        ename          salary');
+	dbms_output.put_line('--------------------------------');
+	for v_emp in c1 loop
+	exit when c1%notfound;
+	dbms_output.put_line(v_emp.eno||'    '||v_emp.ename||'     '||v_emp.salary);
+end loop;
+end;
+/
+2.저장 프로스저를 수정하여 커미션 칼럼을 하나 더 출력하고 이름을 기준으로 내림차순 정렬하시오create or replace procedure sp_commission
+is 
+	cursor c1
+	is
+	select * from employee
+	where commission is not null
+	order by ename desc;
+begin
+	dbms_output.put_line('dno        ename          salary       commission');
+	dbms_output.put_line('---------------------------');
+	for v_emp in c1 loop
+	exit when c1%notfound;
+	dbms_output.put_line(v_emp.eno||'    '||v_emp.ename||'     '||v_emp.salary||'     '||v_emp.commission);
+end loop;
+end;
+/
+3생성된 저장 프로시저를 제거하시오
+drop procedure sp_commission
+/
+4. 사원 이름을 입력받아 부서번호를 출력하는 함수 작성 및 실행
+create or replace function tn_print_dno(
+v_ename in employee.ename%type)
+return number
+is
+v_dno number(7,2);
+begin
+	select dno into v_dno
+	from employee
+	where ename = v_ename;
+	return v_dno;
+end;
+/
+SQL> variable v_dno number;
+SQL> execute:v_dno :=tn_print_dno('SCOTT');
+PL/SQL procedure successfully completed.
+SQL> print v_dno;
+     V_DNO
+----------
+        20
+
+5 하나의 테이블에 insert, update,delete 발생했을 때 다른 테이블에 trigger 발생하는 트리거 작성 타겟 테이블에 트리거 종류 시간 나타내기
+
+
+create or replace trigger trigger_iud
+after insert or update or delete
+on dept_original
+for each row
+begin
+if inserting then
+dbms_output.put_line('insert trigger occured');
+dbms_output.put_line(to_char(sysdate,'yyyy.mm.dd hh24:mi'));
+insert into dept_copy
+values(:new.dno, :new.dname, :new.loc);
+
+elsif deleting then
+dbms_output.put_line('delete trigger occured');
+dbms_output.put_line(to_char(sysdate,'yyyy.mm.dd hh24:mi'));
+delete from dept_copy
+where dept_copy.dno=:old.dno;
+
+elsif updating then
+dbms_output.put_line('update trigger occured');
+dbms_output.put_line(to_char(sysdate,'yyyy.mm.dd hh24:mi'));
+update into dept_copy
+values ('update');
+end if;
+end;
+/
+
+
+데이터베이스 설계
+erwin 사용법
+새파일-논리 물리 놀리물리 중 논리물리로
+model-model properties에 들어가서 둘다 ie로 설정
+
+식별자가 중요하다 나중에 키가 되기 때문에
+
+학교
+학생
+수업
+교사
+성적
+물리 모델링으로 하기 엑셀 은 생 략
+
+2021/11/25
+toad 설치
+https://www.toadworld.com/products/downloads?type=Trial&download=toad-for-oracle
+계정 gg2000@naver.com
+비번 gg620617!!
+
+세션 뉴커넥트
+
+스키마 브라우져에서 테이블중에 선택해서 우클릭 generate Statement클릭 으로 코드를 쉽게 쓸 수 있다 코드를 자동적으로 만들어줌 (insert로 member테이블에 six계정추가함)
+4개의 쿼리문 에디터에서 	 사용
+c에 app생성~생성생성 orcl까지 생성해줘야 자동적으로 dbf파일이 생성된다
+명령문이 여러개일 때 실행은 F5로 실행해야한다(Excute as Script)
+
+
+20211130
+오라클-sqlfile에 emp_example.sql파일을 토드에 넣으면 테이블 3개생성하는 쿼리문 자동 입력된다
+connect by level<=2 줄이 두 개 생긴다 (계층형쿼리.sql)
+
+
+optimizer 
+
+1.통계정보 생성 analyze table employee compute statistics;
+개발자가 optimizer에 개입할 수 없지만 hint를 통해 개입할 수 있다
+2.실행계획-explain plan(토드 하단)
+explain plan보는 법 view -toad option-oracle general-explain plan table을 plan_table로 바꾸면 볼수있다
+
+한번에 인설트하는거 버크 인설트
