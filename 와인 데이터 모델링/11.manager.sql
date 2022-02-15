@@ -1,0 +1,11 @@
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m001','m1111','010-1111-1111');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m002','m2222','010-2222-3333');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m003','m3333','010-3333-4444');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m004','m4444','010-4444-5555');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m005','m5555','010-5555-6666');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m006','m6666','010-6666-7777');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m007','m7777','010-7777-8888');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m008','m8888','010-8888-9999');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m009','m9999','010-9999-1010');
+INSERT INTO manager(manager_id,manager_pwd,manager_tel) VALUES ('m010','m1010','010-1010-1111');
+commit;

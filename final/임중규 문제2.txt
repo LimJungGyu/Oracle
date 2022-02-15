@@ -1,0 +1,12 @@
+create user MyLibraryDB identified by 1234;
+ grant create session to MyLibraryDB;
+grant create table to MyLibraryDB;
+grant create sequence to MyLibraryDB;
+grant create view to MyLibraryDB;
+alter user MyLibraryDB quota 2m on users;
+
+grant connect to MyLibraryDB;
+grant resource to MyLibraryDB;
+create role myrole;
+grant create session,create table,create view to myrole;
+grant myrole to MyLibraryDB;

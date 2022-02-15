@@ -1,0 +1,26 @@
+
+declare
+ dan number:=2;
+ i number:=1;
+ j number:=1;
+ temp varchar2(1000):='';
+ tmp2 varchar2(5):='   ';
+ contmp varchar2(3000):='';
+begin
+while j<9 loop
+	while dan<=9 loop
+	temp:=dan||'*'||j||'='||dan*j;
+	if dan*j<10 then
+	contmp:=contmp||temp||'  ';
+	else
+	contmp:=contmp||temp||'  ';
+	end if;
+	dan:=dan+1;
+	end loop;
+	dbms_output.put_line(contmp);
+	dan:=2;
+	contmp:='';
+	j:=j+1;
+end loop;
+end;
+/
